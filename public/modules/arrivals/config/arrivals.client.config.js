@@ -4,8 +4,8 @@
 angular.module('arrivals').run(['Menus',
     function(Menus) {
         // Set top bar menu items
-        Menus.addMenuItem('topbar', 'Arrivals', 'arrivals', 'dropdown', '/arrivals(/create)?');
-        Menus.addSubMenuItem('topbar', 'arrivals', 'List Arrivals', 'arrivals');
-        Menus.addSubMenuItem('topbar', 'arrivals', 'New Arrival', 'arrivals/create');
+        Menus.addMenuItem('topbar', '到达方向', 'arrivals', 'dropdown', '/arrivals(/create)?');
+        Menus.addSubMenuItem('topbar', 'arrivals', '列表', 'arrivals');
+        Menus.addSubMenuItem('topbar', 'arrivals', '添加', 'arrivals/create');
     }
 ]);
