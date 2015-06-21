@@ -10,10 +10,43 @@ var mongoose = require('mongoose'),
  * Train Schema
  */
 var TrainSchema = new Schema({
-    name: {
+    name: {         // 列车编号
         type: String,
         default: '',
-        required: 'Please fill Train name',
+        required: '请输入到达方向名称',
+        trim: true
+    },
+    section: {      // 运行区段
+        type: String,
+        default: '',
+        required: '请输入到达方向名称',
+        trim: true
+    },
+    track: {    // 停留股道
+        type: Schema.ObjectId,
+        required: '请输入停留股道',
+        ref: 'Track'
+    },
+    arrival: {      // 到达方向
+        type: Schema.ObjectId,
+        required: '请输入到达方向',
+        ref: 'Arrival'
+    },
+    arriveTime: {   // 到达时间
+        type: Number,
+        default: 0,
+        required: '请输入到达时间',
+        trim: true
+    },
+    departure: {    // 出发方向
+        type: Schema.ObjectId,
+        required: '请输入出发方向',
+        ref: 'Departure'
+    },
+    departureTime: {   // 出发时间
+        type: Number,
+        default: 0,
+        required: '请输入出发时间',
         trim: true
     },
     created: {
@@ -27,3 +60,4 @@ var TrainSchema = new Schema({
 });
 
 mongoose.model('Train', TrainSchema);
+

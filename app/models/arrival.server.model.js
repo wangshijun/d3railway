@@ -13,7 +13,7 @@ var ArrivalSchema = new Schema({
     name: {
         type: String,
         default: '',
-        required: 'Please fill Arrival name',
+        required: '请输入到达方向名称',
         trim: true
     },
     created: {

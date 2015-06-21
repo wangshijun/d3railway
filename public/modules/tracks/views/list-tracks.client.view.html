@@ -1,6 +1,6 @@
 <section data-ng-controller="TracksController" data-ng-init="find()">
     <div class="page-header">
-        <h1>Tracks</h1>
+        <h1>股道</h1>
     </div>
     <div class="list-group">
         <a data-ng-repeat="track in tracks" data-ng-href="#!/tracks/{{track._id}}" class="list-group-item">
@@ -13,7 +13,7 @@
             <h4 class="list-group-item-heading" data-ng-bind="track.name"></h4>
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!tracks.$resolved || tracks.length">
-        No Tracks yet, why don't you <a href="/#!/tracks/create">create one</a>?
+    <div class="alert alert-warning " data-ng-hide="!tracks.$resolved || tracks.length">
+        没有数据， <a href="/#!/tracks/create">创建</a>?
     </div>
 </section>

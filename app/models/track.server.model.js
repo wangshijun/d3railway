@@ -13,7 +13,7 @@ var TrackSchema = new Schema({
     name: {
         type: String,
         default: '',
-        required: 'Please fill Track name',
+        required: '请输入股道名称',
         trim: true
     },
     created: {
