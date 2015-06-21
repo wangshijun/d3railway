@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 var should = require('should'),
-	mongoose = require('mongoose'),
-	User = mongoose.model('User'),
-	Departure = mongoose.model('Departure');
+    mongoose = require('mongoose'),
+    User = mongoose.model('User'),
+    Departure = mongoose.model('Departure');
 
 /**
  * Globals
@@ -17,48 +17,48 @@ var user, departure;
  * Unit tests
  */
 describe('Departure Model Unit Tests:', function() {
-	beforeEach(function(done) {
-		user = new User({
-			firstName: 'Full',
-			lastName: 'Name',
-			displayName: 'Full Name',
-			email: 'test@test.com',
-			username: 'username',
-			password: 'password'
-		});
+    beforeEach(function(done) {
+        user = new User({
+            firstName: 'Full',
+            lastName: 'Name',
+            displayName: 'Full Name',
+            email: 'test@test.com',
+            username: 'username',
+            password: 'password'
+        });
 
-		user.save(function() { 
-			departure = new Departure({
-				name: 'Departure Name',
-				user: user
-			});
+        user.save(function() { 
+            departure = new Departure({
+                name: 'Departure Name',
+                user: user
+            });
 
-			done();
-		});
-	});
+            done();
+        });
+    });
 
-	describe('Method Save', function() {
-		it('should be able to save without problems', function(done) {
-			return departure.save(function(err) {
-				should.not.exist(err);
-				done();
-			});
-		});
+    describe('Method Save', function() {
+        it('should be able to save without problems', function(done) {
+            return departure.save(function(err) {
+                should.not.exist(err);
+                done();
+            });
+        });
 
-		it('should be able to show an error when try to save without name', function(done) { 
-			departure.name = '';
+        it('should be able to show an error when try to save without name', function(done) { 
+            departure.name = '';
 
-			return departure.save(function(err) {
-				should.exist(err);
-				done();
-			});
-		});
-	});
+            return departure.save(function(err) {
+                should.exist(err);
+                done();
+            });
+        });
+    });
 
-	afterEach(function(done) { 
-		Departure.remove().exec();
-		User.remove().exec();
+    afterEach(function(done) { 
+        Departure.remove().exec();
+        User.remove().exec();
 
-		done();
-	});
+        done();
+    });
 });
