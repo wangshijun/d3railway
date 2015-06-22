@@ -252,8 +252,10 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .attr('fill', getTrainColor(train.name))
                     .attr('transform', 'rotate(45,' + (points[points.length - 1].x + points[points.length - 2].x) / 2 + ',' + (points[points.length - 1].y + points[points.length - 2].y) / 2 + ')');
 
-                circles.push({ x: points[2].x, y: points[2].y, stroke: getTrainColor(train.name) });
-                circles.push({ x: points[3].x, y: points[3].y, stroke: getTrainColor(train.name) });
+                if (train.arrivalTime) {
+                    circles.push({ x: points[2].x, y: points[2].y, stroke: getTrainColor(train.name) });
+                    circles.push({ x: points[3].x, y: points[3].y, stroke: getTrainColor(train.name) });
+                }
             });
 
             // intersect circles
