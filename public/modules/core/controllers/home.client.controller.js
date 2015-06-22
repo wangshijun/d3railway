@@ -25,6 +25,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
         $scope.draw = function () {
             // 基础分割线
             var majorStrokeWidth = 2;
+            var minorStrokeWidth = 1;
 
             // 高度设定
             var rowHeight = 32;
@@ -57,6 +58,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .enter()
                     .append('line')
                     .attr('class', 'minor-grid-line')
+                    .style('fill', 'none')
+                    .style('stroke', '#CCCCCC')
+                    .style('stroke-width', minorStrokeWidth)
                     .attr('x1', sideColumnWidth)
                     .attr('y1', function (d, i) { return rowHeight * d; })
                     .attr('x2', width)
@@ -70,6 +74,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .enter()
                     .append('line')
                     .attr('class', 'minor-grid-line')
+                    .style('fill', 'none')
+                    .style('stroke', '#CCCCCC')
+                    .style('stroke-width', minorStrokeWidth)
                     .attr('x1', function (d, i) { return majorStrokeWidth + sideColumnWidth + headerColumnWidth + minuteColumnWidth * d; } )
                     .attr('y1', rowHeight)
                     .attr('x2', function (d, i) { return majorStrokeWidth + sideColumnWidth + headerColumnWidth + minuteColumnWidth * d; } )
@@ -83,6 +90,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .enter()
                     .append('line')
                     .attr('class', 'major-grid-line')
+                    .style('fill', 'none')
+                    .style('stroke', 'green')
+                    .style('stroke-width', majorStrokeWidth)
                     .attr('x1', majorStrokeWidth)
                     .attr('y1', function (d, i) { return d + rowHeight; })
                     .attr('x2', width - majorStrokeWidth)
@@ -96,6 +106,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .enter()
                     .append('line')
                     .attr('class', 'major-grid-line')
+                    .style('fill', 'none')
+                    .style('stroke', 'green')
+                    .style('stroke-width', majorStrokeWidth)
                     .attr('x1', function (d, i) { return d; })
                     .attr('y1', rowHeight)
                     .attr('x2', function (d, i) { return d; })
@@ -108,6 +121,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .data(d3.range(1, 24))
                 .enter()
                     .append('line')
+                    .style('fill', 'none')
+                    .style('stroke', 'green')
+                    .style('stroke-width', majorStrokeWidth)
                     .attr('class', 'major-grid-line')
                     .attr('x1', function (d, i) { return sideColumnWidth + headerColumnWidth + hourColumnWidth * d + majorStrokeWidth; })
                     .attr('y1', rowHeight)
@@ -119,6 +135,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .attr('class', 'chart')
                 .attr('x', majorStrokeWidth)
                 .attr('y', majorStrokeWidth)
+                .style('fill', 'none')
+                .style('stroke', 'green')
+                .style('stroke-width', majorStrokeWidth)
                 .attr('width', width - majorStrokeWidth * 2)
                 .attr('height', height - majorStrokeWidth * 2);
 
@@ -130,9 +149,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             var locations = { };
 
             // 第1列大字
-            majorTextWrapper.append('text').text('到达方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2);
-            majorTextWrapper.append('text').text('向塘客场').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight * 0.33);
-            majorTextWrapper.append('text').text('出发方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight);
+            majorTextWrapper.append('text').text('到达方向').style('writing-mode', 'tb').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2);
+            majorTextWrapper.append('text').text('向塘客场').style('writing-mode', 'tb').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight * 0.33);
+            majorTextWrapper.append('text').text('出发方向').style('writing-mode', 'tb').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight);
 
             // 第2列小字
             var minorTexts = _.map($scope.arrivals, function (item) { return item.name; }).sort()
@@ -277,6 +296,20 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
         };
 
+        $scope.download = function (format) {
+            // Get the d3js SVG element
+            var svg = document.getElementById('chart');
+            // Extract the data as SVG text string
+            var xml = (new XMLSerializer).serializeToString(svg);
+            console.log(xml);
+
+            // Submit the <FORM> to the server.
+            // The result will be an attachment file to download.
+            var form = document.getElementById('svgform');
+            form['format'].value = format;
+            form['data'].value = xml;
+            form.submit();
+        };
 
     }
 ]);
