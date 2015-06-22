@@ -27,21 +27,26 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             var majorStrokeWidth = 2;
             var minorStrokeWidth = 1;
 
+            // 时间常量
+            var hourColumnCount = 24;       // 小时数
+            var hourCount = 24;             // 小时数，24小时制
+            var hourStart = 18;             // 开始小时数
+
+            // 宽度设定
+            var hourColumnWidth = 180;      // 每小时的宽度
+            var minuteColumnWidth = 30;     // 10分钟的宽度，每小时分为6个
+            var sideColumnWidth = 50;       // 大标题列宽
+            var headerColumnWidth = 120;    // 2标题列宽
+
             // 高度设定
             var rowHeight = 32;
+
             var rowCount = $scope.arrivals.length + $scope.tracks.length + $scope.departures.length + 2;
             var height = rowHeight * rowCount;
 
             var arrivalSectionHeight = $scope.arrivals.length * rowHeight;
             var tracksSectionHeight = $scope.tracks.length * rowHeight;
             var departureSectionHeight = $scope.departures.length * rowHeight;
-
-            // 宽度设定
-            var hourColumnWidth = 180;
-            var hourColumnCount = 24;
-            var minuteColumnWidth = 30;
-            var sideColumnWidth = 50;
-            var headerColumnWidth = 120;
 
             var width = hourColumnWidth * hourColumnCount + sideColumnWidth + headerColumnWidth;
 
@@ -118,7 +123,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             svg.append('g')
                 .attr('class', 'yaxis-major-grids')
                 .selectAll('line')
-                .data(d3.range(1, 24))
+                .data(d3.range(1, hourCount))
                 .enter()
                     .append('line')
                     .style('fill', 'none')
@@ -172,7 +177,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             // 横向的两个时间轴
             svg.append('g').attr('class', 'minor-text minor-text-hour')
                 .selectAll('text')
-                .data(d3.range(18, 24).concat(d3.range(0, 18)))
+                .data(d3.range(hourStart, hourCount).concat(d3.range(0, hourStart)))
                 .enter()
                     .append('text')
                     .text(function (d) { return d > 10 ? d : '0' + d; })
@@ -181,7 +186,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
             svg.append('g').attr('class', 'minor-text minor-text-hour')
                 .selectAll('text')
-                .data(d3.range(18, 24).concat(d3.range(0, 18)))
+                .data(d3.range(hourStart, hourCount).concat(d3.range(0, hourStart)))
                 .enter()
                     .append('text')
                     .text(function (d) { return d > 10 ? d : '0' + d; })
@@ -286,7 +291,8 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
             function getXPositionFromTime(time) {
                 var date = moment(new Date(time)).tz('Asia/Shanghai');
-                var minutes = date.hours() * 60 + date.minutes();
+                var hours = date.hours() < hourStart ? (date.hours() + (hourCount - hourStart)) : date.hours() - hourStart;
+                var minutes = hours * 60 + date.minutes();
                 var minuteWidth = hourColumnWidth / 60 * minutes;
 
                 return sideColumnWidth + headerColumnWidth + minuteWidth;
