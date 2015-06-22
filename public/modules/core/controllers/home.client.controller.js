@@ -130,9 +130,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             var locations = { };
 
             // 第1列大字
-            majorTextWrapper.append('text').text('到达方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight + 32);
-            majorTextWrapper.append('text').text('向塘客场').attr('x', sideColumnWidth / 2).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight * 0.33);
-            majorTextWrapper.append('text').text('出发方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight + 32);
+            majorTextWrapper.append('text').text('到达方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2);
+            majorTextWrapper.append('text').text('向塘客场').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight * 0.33);
+            majorTextWrapper.append('text').text('出发方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight * 2 + arrivalSectionHeight + tracksSectionHeight);
 
             // 第2列小字
             var minorTexts = _.map($scope.arrivals, function (item) { return item.name; }).sort()
@@ -144,7 +144,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                 .enter()
                     .append('text')
                     .text(function (d) { return d; })
-                    .attr('x', sideColumnWidth + 16)
+                    .attr('x', sideColumnWidth + rowHeight / 2)
                     .attr('y', function (d, i) {
                         locations[d] = rowHeight * ( i + 1.6);
                         return rowHeight * ( i + 1.6);
@@ -172,6 +172,8 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             // 列车行进图
             var pathWrapper = svg.append('g').attr('class', 'paths');
             var textWrapper = svg.append('g').attr('class', 'train-text');
+            var circleWrapper = svg.append('g').attr('class', 'train-circle');
+            var circles = [];
             var generator = d3.svg.line()
                 .x(function (d){ return d.x; })
                 .y(function (d){ return d.y; })
@@ -202,6 +204,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     y: end.y + Math.sqrt(Math.pow(length, 2) / 2)
                 });
 
+                // path
                 pathWrapper.append('path')
                     .attr('class', 'train-path')
                     .attr('d', generator(points))
@@ -209,6 +212,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .style('stroke', isPassengerTrain(train.name) ? 'red' : 'blue')
                     .style('fill', 'none');
 
+                // top label
                 textWrapper.append('text')
                     .attr('class', 'train-name')
                     .text(train.name)
@@ -216,13 +220,29 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .attr('y', (points[0].y + points[1].y) / 2 - magicNumber)
                     .attr('transform', 'rotate(45,' + (points[0].x + points[1].x) / 2 + ',' + (points[0].y + points[1].y) / 2 + ')');
 
+                // bottom label
                 textWrapper.append('text')
                     .attr('class', 'train-name')
                     .text(train.name)
                     .attr('x', (points[points.length - 1].x + points[points.length - 2].x) / 2 - magicNumber)
                     .attr('y', (points[points.length - 1].y + points[points.length - 2].y) / 2 - magicNumber)
                     .attr('transform', 'rotate(45,' + (points[points.length - 1].x + points[points.length - 2].x) / 2 + ',' + (points[points.length - 1].y + points[points.length - 2].y) / 2 + ')');
+
+                circles.push({ x: points[2].x, y: points[2].y, stroke: isPassengerTrain(train.name) ? 'red' : 'blue' });
+                circles.push({ x: points[3].x, y: points[3].y, stroke: isPassengerTrain(train.name) ? 'red' : 'blue' });
             });
+
+            // intersect circles
+            circleWrapper.selectAll('circle')
+                .data(circles)
+                .enter()
+                    .append('circle')
+                    .attr('cx', function (d, i) { return d.x; })
+                    .attr('cy', function (d, i) { return d.y; })
+                    .attr('r', 2)
+                    .style('stroke-width', 1)
+                    .style('stroke', function (d, i) { return d.stroke; })
+                    .style('fill', function (d, i) { return d.stroke; });
 
             // 四个阿拉伯数字以内（包括1个阿拉伯数字 两个阿拉伯数字 三个阿拉伯数字和四个阿拉伯数字
             // 比如K1236 含有1 2 3 6 四个阿拉伯数字  Z11含有1 1 两个阿拉伯数字）
