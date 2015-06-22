@@ -14,6 +14,7 @@
             <th>出发时间</th>
             <th>创建时间</th>
             <th>创建者</th>
+            <th>管理</th>
         </tr>
         <tr data-ng-repeat="train in trains">
             <td><a data-ng-href="#!/trains/{{train._id}}/edit">{{ train.name }}</a></td>
@@ -25,6 +26,11 @@
             <td>{{ train.departureTime | slicetime }}</td>
             <td>{{ train.created | date:'yyyy-MM-dd HH:mm' }}</td>
             <td>{{ train.user.username }}</td>
+            <td>
+                <a class="btn btn-xs btn-danger" data-ng-click="remove();">
+                    <i class="glyphicon glyphicon-trash"></i> 删除
+                </a>
+            </td>
         </tr>
     </div>
     <div class="alert alert-warning " data-ng-hide="!trains.$resolved || trains.length">
