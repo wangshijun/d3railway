@@ -16,7 +16,7 @@
             <th>创建者</th>
         </tr>
         <tr data-ng-repeat="train in trains">
-            <td><a data-ng-href="#!/trains/{{train._id}}">{{ train.name }}</a></td>
+            <td><a data-ng-href="#!/trains/{{train._id}}/edit">{{ train.name }}</a></td>
             <td>{{ train.section }}</td>
             <td>{{ train.track.name }}</td>
             <td>{{ train.arrival.name }}</td>

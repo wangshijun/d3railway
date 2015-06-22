@@ -34,7 +34,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             var hourColumnWidth = 180;
             var hourColumnCount = 24;
             var minuteColumnWidth = 30;
-            var sideColumnWidth = 32;
+            var sideColumnWidth = 50;
             var headerColumnWidth = 120;
 
             var width = hourColumnWidth * hourColumnCount + sideColumnWidth + headerColumnWidth;
@@ -66,9 +66,9 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .append('line')
                     .attr('class', 'minor-grid-line')
                     .attr('x1', function (d, i) { return majorStrokeWidth + sideColumnWidth + headerColumnWidth + minuteColumnWidth * d; } )
-                    .attr('y1', rowHeight + majorStrokeWidth)
+                    .attr('y1', rowHeight)
                     .attr('x2', function (d, i) { return majorStrokeWidth + sideColumnWidth + headerColumnWidth + minuteColumnWidth * d; } )
-                    .attr('y2', height - majorStrokeWidth - rowHeight);
+                    .attr('y2', height - rowHeight);
 
             // 横向的4条粗线，时间轴
             svg.append('g')
@@ -121,10 +121,13 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             var majorTextWrapper = svg.append('g').attr('class', 'major-text');
             var minorTextWrapper = svg.append('g').attr('class', 'minor-text');
 
+            // 每行对应的位置：包括出发、到达、股道
+            var locations = { };
+
             // 第1列大字
-            majorTextWrapper.append('text').text('到达方向').attr('x', 16).attr('y', rowHeight + 32);
-            majorTextWrapper.append('text').text('向塘客场').attr('x', 16).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight * 0.33);
-            majorTextWrapper.append('text').text('出发方向').attr('x', 16).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight + 32);
+            majorTextWrapper.append('text').text('到达方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight + 32);
+            majorTextWrapper.append('text').text('向塘客场').attr('x', sideColumnWidth / 2).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight * 0.33);
+            majorTextWrapper.append('text').text('出发方向').attr('x', sideColumnWidth / 2).attr('y', rowHeight + arrivalSectionHeight + tracksSectionHeight + 32);
 
             // 第2列小字
             var minorTexts = _.map($scope.arrivals, function (item) { return item.name; }).sort()
@@ -137,7 +140,10 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .append('text')
                     .text(function (d) { return d; })
                     .attr('x', sideColumnWidth + 16)
-                    .attr('y', function (d, i) { return rowHeight * ( i + 1) + 21; });
+                    .attr('y', function (d, i) {
+                        locations[d] = rowHeight * ( i + 1.6);
+                        return rowHeight * ( i + 1.6);
+                    });
 
             // 横向的两个时间轴
             svg.append('g').attr('class', 'minor-text minor-text-hour')
@@ -159,7 +165,93 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .attr('y', height - rowHeight * 0.5);
 
             // 列车行进图
+            var pathWrapper = svg.append('g').attr('class', 'paths');
+            var textWrapper = svg.append('g').attr('class', 'train-text');
+            var generator = d3.svg.line()
+                .x(function (d){ return d.x; })
+                .y(function (d){ return d.y; })
+                .interpolate("linear");
+
+            // 创建
+            _.forEach($scope.trains, function (train) {
+                var points = [];
+                points.push({ x: getXPositionFromTime(train.arrivalTime), y: locations[train.arrival.name] });
+                points.push({ x: getXPositionFromTime(train.arrivalTime), y: locations[train.track.name] });
+                points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.track.name] });
+                points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.departure.name] });
+
+                train.name = train.name.slice(0, 3);
+
+                var magicNumber = 5;
+                var start = points[0];
+                var end = points[points.length - 1];
+                var length = train.name.length * Math.sqrt(magicNumber * magicNumber * 2);
+
+                // 已知起点，和斜率，找左边的1各点
+                points.unshift({
+                    x: start.x - Math.sqrt(Math.pow(length, 2) / 2),
+                    y: start.y - Math.sqrt(Math.pow(length, 2) / 2)
+                });
+                points.push({
+                    x: end.x + Math.sqrt(Math.pow(length, 2) / 2),
+                    y: end.y + Math.sqrt(Math.pow(length, 2) / 2)
+                });
+
+                pathWrapper.append('path')
+                    .attr('class', 'train-path')
+                    .attr('d', generator(points))
+                    .style('stroke-width', 1)
+                    .style('stroke', isPassengerTrain(train.name) ? 'red' : 'blue')
+                    .style('fill', 'none');
+
+                textWrapper.append('text')
+                    .attr('class', 'train-name')
+                    .text(train.name)
+                    .attr('x', (points[0].x + points[1].x) / 2 - magicNumber)
+                    .attr('y', (points[0].y + points[1].y) / 2 - magicNumber)
+                    .attr('transform', 'rotate(45,' + (points[0].x + points[1].x) / 2 + ',' + (points[0].y + points[1].y) / 2 + ')');
+
+                textWrapper.append('text')
+                    .attr('class', 'train-name')
+                    .text(train.name)
+                    .attr('x', (points[points.length - 1].x + points[points.length - 2].x) / 2 - magicNumber)
+                    .attr('y', (points[points.length - 1].y + points[points.length - 2].y) / 2 - magicNumber)
+                    .attr('transform', 'rotate(45,' + (points[points.length - 1].x + points[points.length - 2].x) / 2 + ',' + (points[points.length - 1].y + points[points.length - 2].y) / 2 + ')');
+            });
+
+            // 四个阿拉伯数字以内（包括1个阿拉伯数字 两个阿拉伯数字 三个阿拉伯数字和四个阿拉伯数字
+            // 比如K1236 含有1 2 3 6 四个阿拉伯数字  Z11含有1 1 两个阿拉伯数字）
+            // 如果首字母不是X则一定是客车，其他的是货车；
+            function isPassengerTrain(name) {
+                if (name.length > 5) {
+                    return false;
+                }
+
+                var firstChar = name[0].toLowerCase();
+                var parts = name.slice(1);
+                if (isNaN(Number(firstChar))) {
+                    if (parts.length > 4) {     // 超过4个的
+                        return false;
+                    }
+                    if (firstChar === 'x') {    // X开头的
+                        return false;
+                    }
+                } else {
+                }
+
+                return true;
+            }
+
+            function getXPositionFromTime(time) {
+                var date = moment(new Date(time)).tz('Asia/Shanghai');
+                var minutes = date.hours() * 60 + date.minutes();
+                var minuteWidth = hourColumnWidth / 60 * minutes;
+
+                return sideColumnWidth + headerColumnWidth + minuteWidth;
+            }
+
         };
+
 
     }
 ]);

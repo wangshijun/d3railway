@@ -88,7 +88,7 @@ exports.list = function(req, res) {
  * Train middleware
  */
 exports.trainByID = function(req, res, next, id) {
-    Train.findById(id).populate('user', 'username').populate('track').populate('arrival').populate('departure').exec(function(err, train) {
+    Train.findById(id).populate('user', 'username').exec(function(err, train) {
         if (err) return next(err);
         if (! train) return next(new Error('Failed to load Train ' + id));
         req.train = train;

@@ -44,3 +44,20 @@ svg .minor-grid-line {
 svg .major-text text {
     writing-mode: tb;
 }
+
+svg .train-name {
+    font-size: 9px;
+}
+
+/* svg .train-path { */
+/*     stroke-width: 2, */
+/*     fill: none, */
+/* } */
+/*  */
+/* svg .train-path-passenger { */
+/*     stroke: red; */
+/* } */
+/*  */
+/* svg .train-path-goods { */
+/*     stroke: blue; */
+/* } */
