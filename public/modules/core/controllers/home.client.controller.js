@@ -231,7 +231,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .attr('class', 'train-path')
                     .attr('d', generator(points))
                     .style('stroke-width', 1)
-                    .style('stroke', isPassengerTrain(train.name) ? 'red' : 'black')
+                    .style('stroke', getTrainColor(train.name))
                     .style('fill', 'none');
 
                 // top label
@@ -240,6 +240,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .text(train.name)
                     .attr('x', (points[0].x + points[1].x) / 2 - magicNumber)
                     .attr('y', (points[0].y + points[1].y) / 2 - magicNumber)
+                    .attr('fill', getTrainColor(train.name))
                     .attr('transform', 'rotate(45,' + (points[0].x + points[1].x) / 2 + ',' + (points[0].y + points[1].y) / 2 + ')');
 
                 // bottom label
@@ -248,10 +249,11 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .text(train.name)
                     .attr('x', (points[points.length - 1].x + points[points.length - 2].x) / 2 - magicNumber)
                     .attr('y', (points[points.length - 1].y + points[points.length - 2].y) / 2 - magicNumber)
+                    .attr('fill', getTrainColor(train.name))
                     .attr('transform', 'rotate(45,' + (points[points.length - 1].x + points[points.length - 2].x) / 2 + ',' + (points[points.length - 1].y + points[points.length - 2].y) / 2 + ')');
 
-                circles.push({ x: points[2].x, y: points[2].y, stroke: isPassengerTrain(train.name) ? 'red' : 'black' });
-                circles.push({ x: points[3].x, y: points[3].y, stroke: isPassengerTrain(train.name) ? 'red' : 'black' });
+                circles.push({ x: points[2].x, y: points[2].y, stroke: getTrainColor(train.name) });
+                circles.push({ x: points[3].x, y: points[3].y, stroke: getTrainColor(train.name) });
             });
 
             // intersect circles
@@ -266,27 +268,30 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
                     .style('stroke', function (d, i) { return d.stroke; })
                     .style('fill', function (d, i) { return d.stroke; });
 
+            function getTrainColor(name) {
+                return isPassengerTrain(name) ? 'red' : 'black';
+            }
+
             // 四个阿拉伯数字以内（包括1个阿拉伯数字 两个阿拉伯数字 三个阿拉伯数字和四个阿拉伯数字
             // 比如K1236 含有1 2 3 6 四个阿拉伯数字  Z11含有1 1 两个阿拉伯数字）
             // 如果首字母不是X则一定是客车，其他的是货车；
             function isPassengerTrain(name) {
-                if (name.length > 5) {
-                    return false;
+                if (name.indexOf('/') > 0) {
+                    name = name.split('/')[0];
                 }
 
-                var firstChar = name[0].toLowerCase();
-                var parts = name.slice(1);
-                if (isNaN(Number(firstChar))) {
-                    if (parts.length > 4) {     // 超过4个的
-                        return false;
-                    }
-                    if (firstChar === 'x') {    // X开头的
-                        return false;
-                    }
+                if (/^\d+$/.test(name)) {   // 全是数字的话，如果超过4位，肯定是货车
+                    return (name.length < 5);
                 } else {
+                    if (name[0].toLowerCase() !== 'x') {    // X开头的
+                        return true;
+                    }
+                    if (name.slice(1).length > 4) {     // 超过4个的
+                        return false;
+                    }
                 }
 
-                return true;
+                return false;
             }
 
             function getXPositionFromTime(time) {
