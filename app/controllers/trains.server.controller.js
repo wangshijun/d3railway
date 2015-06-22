@@ -72,8 +72,8 @@ exports.delete = function(req, res) {
 /**
  * List of Trains
  */
-exports.list = function(req, res) { 
-    Train.find().sort('-created').populate('user', 'displayName').exec(function(err, trains) {
+exports.list = function(req, res) {
+    Train.find().sort('-created').populate('user', 'username').exec(function(err, trains) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -87,7 +87,7 @@ exports.list = function(req, res) {
 /**
  * Train middleware
  */
-exports.trainByID = function(req, res, next, id) { 
+exports.trainByID = function(req, res, next, id) {
     Train.findById(id).populate('user', 'displayName').exec(function(err, train) {
         if (err) return next(err);
         if (! train) return next(new Error('Failed to load Train ' + id));

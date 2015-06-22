@@ -3,16 +3,17 @@
         <a data-ng-href="#!/tracks/create" class="pull-right btn btn-primary">添加</a>
         <h1>股道</h1>
     </div>
-    <div class="list-group">
-        <a data-ng-repeat="track in tracks" data-ng-href="#!/tracks/{{track._id}}" class="list-group-item">
-            <small class="list-group-item-text">
-                Posted on
-                <span data-ng-bind="track.created | date:'medium'"></span>
-                by
-                <span data-ng-bind="track.user.displayName"></span>
-            </small>
-            <h4 class="list-group-item-heading" data-ng-bind="track.name"></h4>
-        </a>
+    <table ng-if="tracks.length" class="table table-bordered table-stripped">
+        <tr>
+            <th>名称</th>
+            <th>创建时间</th>
+            <th>创建者</th>
+        </tr>
+        <tr data-ng-repeat="track in tracks">
+            <td><a data-ng-href="#!/tracks/{{track._id}}">{{ track.name }}</a></td>
+            <td>{{ track.created | date:'medium' }}</td>
+            <td>{{ track.user.username }}</td>
+        </tr>
     </div>
     <div class="alert alert-warning " data-ng-hide="!tracks.$resolved || tracks.length">
         没有数据， <a href="/#!/tracks/create">创建</a>?

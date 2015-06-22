@@ -3,16 +3,17 @@
         <a data-ng-href="#!/trains/create" class="pull-right btn btn-primary">添加</a>
         <h1>列车</h1>
     </div>
-    <div class="list-group">
-        <a data-ng-repeat="train in trains" data-ng-href="#!/trains/{{train._id}}" class="list-group-item">
-            <small class="list-group-item-text">
-                Posted on
-                <span data-ng-bind="train.created | date:'medium'"></span>
-                by
-                <span data-ng-bind="train.user.displayName"></span>
-            </small>
-            <h4 class="list-group-item-heading" data-ng-bind="train.name"></h4>
-        </a>
+    <table ng-if="trains.length" class="table table-bordered table-stripped">
+        <tr>
+            <th>名称</th>
+            <th>创建时间</th>
+            <th>创建者</th>
+        </tr>
+        <tr data-ng-repeat="train in trains">
+            <td><a data-ng-href="#!/trains/{{train._id}}">{{ train.name }}</a></td>
+            <td>{{ train.created | date:'medium' }}</td>
+            <td>{{ train.user.username }}</td>
+        </tr>
     </div>
     <div class="alert alert-warning " data-ng-hide="!trains.$resolved || trains.length">
         没有数据， <a href="/#!/trains/create">创建</a>?

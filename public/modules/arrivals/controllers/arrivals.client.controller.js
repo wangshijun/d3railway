@@ -14,7 +14,7 @@ angular.module('arrivals').controller('ArrivalsController', ['$scope', '$statePa
 
             // Redirect after save
             arrival.$save(function(response) {
-                $location.path('arrivals/' + response._id);
+                $location.path('arrivals');
 
                 // Clear form fields
                 $scope.name = '';
@@ -25,7 +25,7 @@ angular.module('arrivals').controller('ArrivalsController', ['$scope', '$statePa
 
         // Remove existing Arrival
         $scope.remove = function(arrival) {
-            if ( arrival ) { 
+            if ( arrival ) {
                 arrival.$remove();
 
                 for (var i in $scope.arrivals) {
@@ -45,7 +45,7 @@ angular.module('arrivals').controller('ArrivalsController', ['$scope', '$statePa
             var arrival = $scope.arrival;
 
             arrival.$update(function() {
-                $location.path('arrivals/' + arrival._id);
+                $location.path('arrivals');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -58,7 +58,7 @@ angular.module('arrivals').controller('ArrivalsController', ['$scope', '$statePa
 
         // Find existing Arrival
         $scope.findOne = function() {
-            $scope.arrival = Arrivals.get({ 
+            $scope.arrival = Arrivals.get({
                 arrivalId: $stateParams.arrivalId
             });
         };

@@ -72,8 +72,8 @@ exports.delete = function(req, res) {
 /**
  * List of Tracks
  */
-exports.list = function(req, res) { 
-    Track.find().sort('-created').populate('user', 'displayName').exec(function(err, tracks) {
+exports.list = function(req, res) {
+    Track.find().sort('-created').populate('user', 'username').exec(function(err, tracks) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -87,7 +87,7 @@ exports.list = function(req, res) {
 /**
  * Track middleware
  */
-exports.trackByID = function(req, res, next, id) { 
+exports.trackByID = function(req, res, next, id) {
     Track.findById(id).populate('user', 'displayName').exec(function(err, track) {
         if (err) return next(err);
         if (! track) return next(new Error('Failed to load Track ' + id));

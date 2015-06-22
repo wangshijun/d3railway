@@ -25,7 +25,7 @@ angular.module('trains').controller('TrainsController', ['$scope', '$stateParams
 
         // Remove existing Train
         $scope.remove = function(train) {
-            if ( train ) { 
+            if ( train ) {
                 train.$remove();
 
                 for (var i in $scope.trains) {
@@ -58,7 +58,7 @@ angular.module('trains').controller('TrainsController', ['$scope', '$stateParams
 
         // Find existing Train
         $scope.findOne = function() {
-            $scope.train = Trains.get({ 
+            $scope.train = Trains.get({
                 trainId: $stateParams.trainId
             });
         };

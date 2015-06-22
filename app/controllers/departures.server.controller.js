@@ -73,7 +73,7 @@ exports.delete = function(req, res) {
  * List of Departures
  */
 exports.list = function(req, res) { 
-    Departure.find().sort('-created').populate('user', 'displayName').exec(function(err, departures) {
+    Departure.find().sort('-created').populate('user', 'username').exec(function(err, departures) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)

@@ -3,16 +3,17 @@
         <a data-ng-href="#!/arrivals/create" class="pull-right btn btn-primary">添加</a>
         <h1>到达方向</h1>
     </div>
-    <div class="list-group">
-        <a data-ng-repeat="arrival in arrivals" data-ng-href="#!/arrivals/{{arrival._id}}" class="list-group-item">
-            <small class="list-group-item-text">
-                Posted on
-                <span data-ng-bind="arrival.created | date:'medium'"></span>
-                by
-                <span data-ng-bind="arrival.user.displayName"></span>
-            </small>
-            <h4 class="list-group-item-heading" data-ng-bind="arrival.name"></h4>
-        </a>
+    <table ng-if="arrivals.length" class="table table-bordered table-stripped">
+        <tr>
+            <th>名称</th>
+            <th>创建时间</th>
+            <th>创建者</th>
+        </tr>
+        <tr data-ng-repeat="arrival in arrivals">
+            <td><a data-ng-href="#!/arrivals/{{arrival._id}}">{{ arrival.name }}</a></td>
+            <td>{{ arrival.created | date:'medium' }}</td>
+            <td>{{ arrival.user.username }}</td>
+        </tr>
     </div>
     <div class="alert alert-warning " data-ng-hide="!arrivals.$resolved || arrivals.length">
         没有数据， <a href="/#!/arrivals/create">创建</a>?
