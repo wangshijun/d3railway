@@ -5,6 +5,8 @@ var sys = require('sys'),
     fs = require('fs'),
     exec = require('child_process').exec;
 
+var Svg = require('svgutils').Svg;
+
 /**
  * Module dependencies.
  */
@@ -16,38 +18,32 @@ exports.index = function(req, res) {
 };
 
 exports.download = function (req, res) {
-    // output format (pdf or png )
-
+    // output format (svg or png )
     tmp.file({postfix: '.svg'}, function _tempFileCreated(err, inputFilePath, fd) {
+        if (err) { return res.json(500, err); }
 
-        if (err) {
-            res.json(500, err);
-        } else {
-            fs.writeFile(inputFilePath, req.body.data, function(err) {
-                if (err) {
-                    res.json(500, err);
+        fs.writeFile(inputFilePath, req.body.data, function (err) {
+            if (err) { return res.json(500, err); }
+
+            Svg.fromSvgDocument(inputFilePath, function (err, svg) {
+                if (err) { return res.json(500, err); }
+
+                var outputFilePath = './' + (new Date).getTime() + '.' + req.body.format;
+
+                if (req.body.format === 'svg') {
+                    svg.save({ output : outputFilePath }, function (err, filename) {
+                        if (err) { return res.json(500, err); }
+                        res.attachment(outputFilePath);
+                        res.sendfile(outputFilePath);
+                    });
                 } else {
-                    tmp.file({postfix: '.' + req.body.format}, function _tempFileCreated(err, outputFilePath, fd) {
-                        if (err) {
-                            res.json(500, err);
-                        } else {
-                            var cmd = "rsvg-convert -z 5 --background-color white -a";
-                            cmd += " -f " + req.body.format;
-                            cmd += " -o " + outputFilePath;
-                            cmd += " " + inputFilePath;
-
-                            exec(cmd, function (error, stdout, stderr) {
-                                if (error !== null) {
-                                    res.json(500, error);
-                                } else {
-                                    res.attachment(outputFilePath);
-                                    res.sendfile(outputFilePath);
-                                }
-                            });
-                        }
+                    svg.savePng({ output : outputFilePath }, function (err, filename) {
+                        if (err) { return res.json(500, err); }
+                        res.attachment(outputFilePath);
+                        res.sendfile(outputFilePath);
                     });
                 }
             });
-        }
+        });
     });
 };
