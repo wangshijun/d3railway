@@ -16,6 +16,8 @@ module.exports = {
                 'public/lib/bootstrap/dist/css/bootstrap.css',
             ],
             js: [
+                'public/lib/d3/d3.js',
+                'public/lib/lodash/lodash.js',
                 'public/lib/angular/angular.js',
                 'public/lib/angular-resource/angular-resource.js',
                 'public/lib/angular-cookies/angular-cookies.js',
