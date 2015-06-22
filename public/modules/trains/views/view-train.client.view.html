@@ -1,21 +1,53 @@
 <section data-ng-controller="TrainsController" data-ng-init="findOne()">
     <div class="page-header">
+        <div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == train.user._id))">
+            <a class="btn btn-primary" href="/#!/trains/{{train._id}}/edit">
+                <i class="glyphicon glyphicon-edit"></i>
+            </a>
+            <a class="btn btn-primary" data-ng-click="remove();">
+                <i class="glyphicon glyphicon-trash"></i>
+            </a>
+        </div>
         <h1 data-ng-bind="train.name"></h1>
     </div>
-    <div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == train.user._id))">
-        <a class="btn btn-primary" href="/#!/trains/{{train._id}}/edit">
-            <i class="glyphicon glyphicon-edit"></i>
-        </a>
-        <a class="btn btn-primary" data-ng-click="remove();">
-            <i class="glyphicon glyphicon-trash"></i>
-        </a>
+    <div class="col-md-12">
+        <form class="form form-vertical" disabled="true" data-ng-submit="update()" novalidate>
+            <fieldset>
+                <div class="form-group">
+                    <label class="control-label" for="section">运行区间</label>
+                    <input type="text" data-ng-model="train.section" id="section" class="form-control" placeholder="运行区间" required>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="track">停留股道</label>
+                    <select class="form-control" data-ng-options="item._id as item.name for item in tracks" data-ng-model="train.track"></select>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="arrival">到达方向</label>
+                        <select class="form-control" data-ng-options="item._id as item.name for item in arrivals" data-ng-model="train.arrival" ></select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="departure">出发方向</label>
+                        <select class="form-control" data-ng-options="item._id as item.name for item in departures" data-ng-model="train.departure" ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="arrivalTime">到达时间</label>
+                        <timepicker ng-model="train.arrivalTime" hour-step="1" minute-step="1" show-meridian="false"></timepicker>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="departureTime">出发时间</label>
+                        <timepicker ng-model="train.departureTime" hour-step="1" minute-step="1" show-meridian="false"></timepicker>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="保存" class="btn btn-primary">
+                </div>
+                <div data-ng-show="error" class="text-danger">
+                    <strong data-ng-bind="error"></strong>
+                </div>
+            </fieldset>
+        </form>
     </div>
-    <small>
-        <em class="text-muted">
-            Posted on
-            <span data-ng-bind="train.created | date:'mediumDate'"></span>
-            by
-            <span data-ng-bind="train.user.displayName"></span>
-        </em>
-    </small>
 </section>

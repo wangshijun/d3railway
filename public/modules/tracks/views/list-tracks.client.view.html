@@ -11,7 +11,7 @@
         </tr>
         <tr data-ng-repeat="track in tracks">
             <td><a data-ng-href="#!/tracks/{{track._id}}">{{ track.name }}</a></td>
-            <td>{{ track.created | date:'medium' }}</td>
+            <td>{{ track.created | date:'yyyy-MM-dd HH:mm' }}</td>
             <td>{{ track.user.username }}</td>
         </tr>
     </div>

@@ -32,11 +32,10 @@ var TrainSchema = new Schema({
         required: '请输入到达方向',
         ref: 'Arrival'
     },
-    arriveTime: {   // 到达时间
-        type: Number,
-        default: 0,
+    arrivalTime: {   // 到达时间
+        type: String,
+        default: '',
         required: '请输入到达时间',
-        trim: true
     },
     departure: {    // 出发方向
         type: Schema.ObjectId,
@@ -44,10 +43,9 @@ var TrainSchema = new Schema({
         ref: 'Departure'
     },
     departureTime: {   // 出发时间
-        type: Number,
-        default: 0,
+        type: String,
+        default: '',
         required: '请输入出发时间',
-        trim: true
     },
     created: {
         type: Date,

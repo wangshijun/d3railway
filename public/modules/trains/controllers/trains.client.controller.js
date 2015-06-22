@@ -1,15 +1,30 @@
 'use strict';
 
 // Trains controller
-angular.module('trains').controller('TrainsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Trains',
-    function($scope, $stateParams, $location, Authentication, Trains) {
+angular.module('trains').controller('TrainsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Trains', 'Tracks', 'Arrivals', 'Departures',
+    function($scope, $stateParams, $location, Authentication, Trains, Tracks, Arrivals, Departures) {
         $scope.authentication = Authentication;
+
+        $scope.tracks = Tracks.query();
+        $scope.arrivals = Arrivals.query();
+        $scope.departures = Departures.query();
+
+        $scope.arrivalTime = new Date();
+        $scope.departureTime = new Date();
 
         // Create new Train
         $scope.create = function() {
+            console.log(this);
+
             // Create new Train object
             var train = new Trains ({
-                name: this.name
+                name: this.name,
+                section: this.section,
+                track: this.track,
+                arrival: this.arrival,
+                arrivalTime: this.arrivalTime,
+                departure: this.departure,
+                departureTime: this.departureTime,
             });
 
             // Redirect after save
@@ -18,6 +33,13 @@ angular.module('trains').controller('TrainsController', ['$scope', '$stateParams
 
                 // Clear form fields
                 $scope.name = '';
+                $scope.section = '';
+                $scope.track = '';
+                $scope.arrival = '';
+                $scope.arrivalTime = '';
+                $scope.departure = '';
+                $scope.departureTime = '';
+
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

@@ -11,7 +11,7 @@
         </tr>
         <tr data-ng-repeat="arrival in arrivals">
             <td><a data-ng-href="#!/arrivals/{{arrival._id}}">{{ arrival.name }}</a></td>
-            <td>{{ arrival.created | date:'medium' }}</td>
+            <td>{{ arrival.created | date:'yyyy-MM-dd HH:mm' }}</td>
             <td>{{ arrival.user.username }}</td>
         </tr>
     </div>

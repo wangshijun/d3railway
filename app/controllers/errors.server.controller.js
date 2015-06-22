@@ -6,6 +6,8 @@
 var getUniqueErrorMessage = function(err) {
     var output;
 
+    console.log(err);
+
     try {
         var fieldName = err.err.substring(err.err.lastIndexOf('.$') + 2, err.err.lastIndexOf('_1'));
         output = fieldName.charAt(0).toUpperCase() + fieldName.slice(1) + ' already exists';
@@ -23,6 +25,7 @@ var getUniqueErrorMessage = function(err) {
 exports.getErrorMessage = function(err) {
     var message = '';
 
+    console.log(err);
     if (err.code) {
         switch (err.code) {
             case 11000:

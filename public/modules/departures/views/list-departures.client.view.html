@@ -11,7 +11,7 @@
         </tr>
         <tr data-ng-repeat="departure in departures">
             <td><a data-ng-href="#!/departures/{{departure._id}}">{{ departure.name }}</a></td>
-            <td>{{ departure.created | date:'medium' }}</td>
+            <td>{{ departure.created | date:'yyyy-MM-dd HH:mm' }}</td>
             <td>{{ departure.user.username }}</td>
         </tr>
     </div>

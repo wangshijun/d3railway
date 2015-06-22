@@ -7,8 +7,34 @@
             <fieldset>
                 <div class="form-group">
                     <label class="control-label" for="name">车次</label>
-                    <div class="controls">
-                        <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="车次" required>
+                    <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="车次" required>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="section">运行区间</label>
+                    <input type="text" data-ng-model="section" id="section" class="form-control" placeholder="运行区间" required>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="track">停留股道</label>
+                    <select class="form-control" data-ng-options="item._id as item.name for item in tracks" data-ng-model="track"></select>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="arrival">到达方向</label>
+                        <select class="form-control" data-ng-options="item._id as item.name for item in arrivals" data-ng-model="arrival" ></select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="departure">出发方向</label>
+                        <select class="form-control" data-ng-options="item._id as item.name for item in departures" data-ng-model="departure" ></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="arrivalTime">到达时间</label>
+                        <timepicker ng-model="arrivalTime" hour-step="1" minute-step="1" show-meridian="false"></timepicker>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label class="control-label" for="departureTime">出发时间</label>
+                        <timepicker ng-model="departureTime" hour-step="1" minute-step="1" show-meridian="false"></timepicker>
                     </div>
                 </div>
                 <div class="form-group">
