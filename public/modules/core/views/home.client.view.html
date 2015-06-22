@@ -1,3 +1,11 @@
 <section data-ng-controller="HomeController">
-    <svg id="chart"></svg>
+    <div class="page-header">
+        <h1>进路图（{{ today | date:'yyyy-MM-dd HH:mm' }}）</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p ng-show="!canDraw" class="alert alert-info">到达、出发方向、股道或者车次数据不完整，请补充数据之后来看图</p>
+            <svg id="chart"></svg>
+        </div>
+    </div>
 </section>

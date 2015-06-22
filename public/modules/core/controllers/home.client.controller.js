@@ -6,6 +6,8 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
         // This provides Authentication context.
         $scope.authentication = Authentication;
 
+        $scope.today = new Date();
+
         $scope.trains = Trains.query();
         $scope.tracks = Tracks.query();
         $scope.arrivals = Arrivals.query();
@@ -13,7 +15,10 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
         $scope.$watch('trains.length + tracks.length + arrivals.length + departures.length', function () {
             if ($scope.trains.length && $scope.tracks.length && $scope.arrivals.length && $scope.departures.length) {
+                $scope.canDraw = true;
                 $scope.draw();
+            } else {
+                $scope.canDraw = false;
             }
         });
 
