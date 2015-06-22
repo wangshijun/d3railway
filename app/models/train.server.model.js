@@ -16,12 +16,6 @@ var TrainSchema = new Schema({
         required: '请输入到达方向名称',
         trim: true
     },
-    section: {      // 运行区段
-        type: String,
-        default: '',
-        required: '请输入到达方向名称',
-        trim: true
-    },
     track: {    // 停留股道
         type: Schema.ObjectId,
         required: '请输入停留股道',
@@ -35,7 +29,6 @@ var TrainSchema = new Schema({
     arrivalTime: {   // 到达时间
         type: String,
         default: '',
-        required: '请输入到达时间',
     },
     departure: {    // 出发方向
         type: Schema.ObjectId,

@@ -155,7 +155,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
             // 第2列小字
             var minorTexts = _.map($scope.arrivals, function (item) { return item.name; }).sort()
-                .concat(_.map($scope.tracks, function (item) { return item.name; }).reverse())
+                .concat(_.map($scope.tracks, function (item) { return item.name; }).sort(function (a, b) { return Number(a) - Number(b); }))
                 .concat(_.map($scope.departures, function (item) { return item.name; }).sort());
 
             minorTextWrapper.selectAll('text')
@@ -172,20 +172,20 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             // 横向的两个时间轴
             svg.append('g').attr('class', 'minor-text minor-text-hour')
                 .selectAll('text')
-                .data(d3.range(0, 24))
+                .data(d3.range(18, 24).concat(d3.range(0, 18)))
                 .enter()
                     .append('text')
                     .text(function (d) { return d > 10 ? d : '0' + d; })
-                    .attr('x', function (d, i) { return sideColumnWidth + headerColumnWidth + d * hourColumnWidth - 6; })
+                    .attr('x', function (d, i) { return sideColumnWidth + headerColumnWidth + i * hourColumnWidth - 6; })
                     .attr('y', rowHeight * 0.8);
 
             svg.append('g').attr('class', 'minor-text minor-text-hour')
                 .selectAll('text')
-                .data(d3.range(0, 24))
+                .data(d3.range(18, 24).concat(d3.range(0, 18)))
                 .enter()
                     .append('text')
                     .text(function (d) { return d > 10 ? d : '0' + d; })
-                    .attr('x', function (d, i) { return sideColumnWidth + headerColumnWidth + d * hourColumnWidth - 6; })
+                    .attr('x', function (d, i) { return sideColumnWidth + headerColumnWidth + i * hourColumnWidth - 6; })
                     .attr('y', height - rowHeight * 0.5);
 
             // 列车行进图
@@ -201,17 +201,15 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
             // 创建
             _.forEach($scope.trains, function (train) {
                 var points = [];
-                points.push({ x: getXPositionFromTime(train.arrivalTime), y: locations[train.arrival.name] });
-                points.push({ x: getXPositionFromTime(train.arrivalTime), y: locations[train.track.name] });
+                points.push({ x: getXPositionFromTime(train.arrivalTime || train.departureTime), y: locations[train.arrival.name] });
+                points.push({ x: getXPositionFromTime(train.arrivalTime || train.departureTime), y: locations[train.track.name] });
                 points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.track.name] });
                 points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.departure.name] });
-
-                train.name = train.name.slice(0, 3);
 
                 var magicNumber = 5;
                 var start = points[0];
                 var end = points[points.length - 1];
-                var length = train.name.length * Math.sqrt(magicNumber * magicNumber * 2);
+                var length = (train.name.indexOf('/') > 0 ? train.name.split('/').shift().length : train.name.length) * Math.sqrt(magicNumber * magicNumber * 2);
 
                 // 已知起点，和斜率，找左边的1各点
                 points.unshift({

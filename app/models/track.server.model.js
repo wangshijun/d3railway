@@ -14,7 +14,6 @@ var TrackSchema = new Schema({
         type: String,
         default: '',
         required: '请输入股道名称',
-        trim: true
     },
     created: {
         type: Date,

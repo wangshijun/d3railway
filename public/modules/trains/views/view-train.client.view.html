@@ -21,10 +21,6 @@
                     <input type="text" disabled data-ng-model="train.name" id="name" class="form-control" placeholder="车次" required>
                 </div>
                 <div class="form-group">
-                    <label class="control-label" for="section">运行区间</label>
-                    <input type="text" disabled data-ng-model="train.section" id="section" class="form-control" placeholder="运行区间" required>
-                </div>
-                <div class="form-group">
                     <label class="control-label" for="track">停留股道</label>
                     <select class="form-control" disabled data-ng-options="item._id as item.name for item in tracks" data-ng-model="train.track"></select>
                 </div>

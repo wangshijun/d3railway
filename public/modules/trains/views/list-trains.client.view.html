@@ -6,7 +6,6 @@
     <table ng-if="trains.length" class="table table-bordered table-stripped">
         <tr>
             <th>名称</th>
-            <th>运行区间</th>
             <th>停留股道</th>
             <th>到达方向</th>
             <th>出发方向</th>
@@ -18,7 +17,6 @@
         </tr>
         <tr data-ng-repeat="train in trains">
             <td><a data-ng-href="#!/trains/{{train._id}}/edit">{{ train.name }}</a></td>
-            <td>{{ train.section }}</td>
             <td>{{ train.track.name }}</td>
             <td>{{ train.arrival.name }}</td>
             <td>{{ train.departure.name }}</td>
