@@ -3,31 +3,31 @@
     <div class="col-md-6">
         <form name="userForm" data-ng-submit="signup()" class="signin form-vertical" novalidate autocomplete="off">
             <fieldset>
+                <!-- <div class="form&#45;group"> -->
+                <!--     <label for="firstName">First Name</label> -->
+                <!--     <input type="text" required id="firstName" name="firstName" class="form&#45;control" data&#45;ng&#45;model="credentials.firstName" placeholder="First Name"> -->
+                <!-- </div> -->
+                <!-- <div class="form&#45;group"> -->
+                <!--     <label for="lastName">Last Name</label> -->
+                <!--     <input type="text" id="lastName" name="lastName" class="form&#45;control" data&#45;ng&#45;model="credentials.lastName" placeholder="Last Name"> -->
+                <!-- </div> -->
                 <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" required id="firstName" name="firstName" class="form-control" data-ng-model="credentials.firstName" placeholder="First Name">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" class="form-control" data-ng-model="credentials.lastName" placeholder="Last Name">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" data-ng-model="credentials.email" placeholder="Email">
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" data-ng-model="credentials.username" placeholder="Username">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" class="form-control" data-ng-model="credentials.email" placeholder="邮箱">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="Password">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" class="form-control" data-ng-model="credentials.username" placeholder="用户名">
                 </div>
-                <div class="text-center form-group">
-                    <button type="submit" class="btn btn-large btn-primary">Sign up</button>&nbsp; or&nbsp;
-                    <a href="/#!/signin" class="show-signup">Sign in</a>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="密码">
                 </div>
-                <div data-ng-show="error" class="text-center text-danger">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-large btn-primary">注册</button>&nbsp; or&nbsp;
+                    <a href="/#!/signin" class="show-signup">登录</a>
+                </div>
+                <div data-ng-show="error" class="text-danger">
                     <strong data-ng-bind="error"></strong>
                 </div>
             </fieldset>

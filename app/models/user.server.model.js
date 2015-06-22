@@ -29,13 +29,11 @@ var UserSchema = new Schema({
         type: String,
         trim: true,
         default: '',
-        validate: [validateLocalStrategyProperty, 'Please fill in your first name']
     },
     lastName: {
         type: String,
         trim: true,
         default: '',
-        validate: [validateLocalStrategyProperty, 'Please fill in your last name']
     },
     displayName: {
         type: String,
@@ -51,7 +49,7 @@ var UserSchema = new Schema({
     username: {
         type: String,
         unique: 'testing error message',
-        required: 'Please fill in a username',
+        required: '请输入用户名',
         trim: true
     },
     password: {

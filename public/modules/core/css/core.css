@@ -17,3 +17,8 @@
 .navbar-inverse .navbar-nav > li > a {
     cursor: pointer;
 }
+
+.page-header h1,
+h3.col-md-12 {
+    font-size: 24px;
+}
