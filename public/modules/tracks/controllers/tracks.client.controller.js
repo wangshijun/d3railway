@@ -14,7 +14,7 @@ angular.module('tracks').controller('TracksController', ['$scope', '$stateParams
 
             // Redirect after save
             track.$save(function(response) {
-                $location.path('tracks/' + response._id);
+                $location.path('tracks');
 
                 // Clear form fields
                 $scope.name = '';
@@ -25,7 +25,7 @@ angular.module('tracks').controller('TracksController', ['$scope', '$stateParams
 
         // Remove existing Track
         $scope.remove = function(track) {
-            if ( track ) { 
+            if ( track ) {
                 track.$remove();
 
                 for (var i in $scope.tracks) {
@@ -45,7 +45,7 @@ angular.module('tracks').controller('TracksController', ['$scope', '$stateParams
             var track = $scope.track;
 
             track.$update(function() {
-                $location.path('tracks/' + track._id);
+                $location.path('tracks');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -58,7 +58,7 @@ angular.module('tracks').controller('TracksController', ['$scope', '$stateParams
 
         // Find existing Track
         $scope.findOne = function() {
-            $scope.track = Tracks.get({ 
+            $scope.track = Tracks.get({
                 trackId: $stateParams.trackId
             });
         };

@@ -14,7 +14,7 @@ angular.module('departures').controller('DeparturesController', ['$scope', '$sta
 
             // Redirect after save
             departure.$save(function(response) {
-                $location.path('departures/' + response._id);
+                $location.path('departures');
 
                 // Clear form fields
                 $scope.name = '';
@@ -25,7 +25,7 @@ angular.module('departures').controller('DeparturesController', ['$scope', '$sta
 
         // Remove existing Departure
         $scope.remove = function(departure) {
-            if ( departure ) { 
+            if ( departure ) {
                 departure.$remove();
 
                 for (var i in $scope.departures) {
@@ -45,7 +45,7 @@ angular.module('departures').controller('DeparturesController', ['$scope', '$sta
             var departure = $scope.departure;
 
             departure.$update(function() {
-                $location.path('departures/' + departure._id);
+                $location.path('departures');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
@@ -58,7 +58,7 @@ angular.module('departures').controller('DeparturesController', ['$scope', '$sta
 
         // Find existing Departure
         $scope.findOne = function() {
-            $scope.departure = Departures.get({ 
+            $scope.departure = Departures.get({
                 departureId: $stateParams.departureId
             });
         };

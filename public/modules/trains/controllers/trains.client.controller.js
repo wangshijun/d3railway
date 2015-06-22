@@ -14,7 +14,7 @@ angular.module('trains').controller('TrainsController', ['$scope', '$stateParams
 
             // Redirect after save
             train.$save(function(response) {
-                $location.path('trains/' + response._id);
+                $location.path('trains');
 
                 // Clear form fields
                 $scope.name = '';
@@ -45,7 +45,7 @@ angular.module('trains').controller('TrainsController', ['$scope', '$stateParams
             var train = $scope.train;
 
             train.$update(function() {
-                $location.path('trains/' + train._id);
+                $location.path('trains');
             }, function(errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
