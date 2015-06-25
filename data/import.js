@@ -32,7 +32,7 @@ var Departure = mongoose.model('Departure');
 // parse csv files
 var data = fs.readFileSync('./data/trains.csv');
 csv.parse(data, function (err, items) {
-    items.shift();
+    // items.shift();
 
     var arrivals = [];
     var tracks = [];
@@ -63,7 +63,6 @@ csv.parse(data, function (err, items) {
             trains.push(train);
         }
     });
-
 
     var u;
 
