@@ -189,7 +189,10 @@ function addTrains(items, user) {
         item.user = user;
         var item = new Train(item);
         item.save(function (err, obj) {
-            if (err) { console.log('addTrain:', err); }
+            if (err) {
+                console.log('addTrain:', err, obj);
+                return d.resolve(obj);
+            }
             console.log('addTrain: ', obj.toObject());
             d.resolve(obj);
         });
