@@ -2,7 +2,11 @@
 
 var init = require('../config/init')(),
     config = require('../config/config'),
+    logger = require('winston'),
     mongoose = require('mongoose');
+
+logger.remove(logger.transports.Console);
+logger.add(logger.transports.Console, {colorize: true, level: 'debug', json: false});
 
 var path = require('path');
 var fs = require('fs');
@@ -13,8 +17,8 @@ var Q = require('q');
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
     if (err) {
-        console.error(chalk.red('Could not connect to MongoDB!'));
-        console.log(chalk.red(err));
+        logger.error(chalk.red('Could not connect to MongoDB!'));
+        logger.debug(chalk.red(err));
     }
 });
 
@@ -31,10 +35,10 @@ var Departure = mongoose.model('Departure');
 
 function handleError(err, label, rowsDeleted) {
     if (err) {
-        console.log('Error when truncate collection:', label);
+        logger.error('Error when truncate collection:', label);
         process.exit(1);
     } else {
-        console.log('Deleted %d items from %s', rowsDeleted, label);
+        logger.debug('Deleted %d items from %s', rowsDeleted, label);
     }
 }
 
@@ -74,6 +78,12 @@ function importData() {
                 departureTime: getTime(item[4]),
                 track: item[5],
             };
+
+            if (train.arrivalTime && !train.departureTime) {
+                train.departureTime = train.arrivalTime;
+                train.arrivalTime = '';
+                logger.error(train);
+            }
 
             if (item[1] && arrivals.indexOf(item[1]) === -1) {
                 arrivals.push(item[1]);
@@ -128,8 +138,8 @@ function getUser() {
     var d = Q.defer();
 
     User.findOne({}, function (err, user) {
-        if (err) { console.log('getUser:', err); }
-        console.log('getUser: %s', user.toObject());
+        if (err) { logger.error('getUser:', err); }
+        logger.info('getUser: %s', user.toObject());
         d.resolve(user);
     });
 
@@ -144,8 +154,8 @@ function addArrivals(names, user) {
 
         var item = new Arrival({ name: name, user: user });
         item.save(function (err, obj) {
-            if (err) { console.log('addArrival:', err); }
-            console.log('addArrival: %s => %s', name, obj._id.toString());
+            if (err) { logger.error('addArrival:', err, item.toObject()); }
+            logger.info('addArrival: %s => %s', name, obj._id.toString());
             map[name] = obj._id;
             d.resolve(obj);
         });
@@ -164,12 +174,12 @@ function addTracks(names, user) {
     var d = Q.defer();
     var map = {};
     var tasks = names.map(function (name) {
-        console.log(name, unorm.nfd(name), unorm.nfc(name), unorm.nfkd(name), unorm.nfkc(name));
+        logger.debug(name, unorm.nfd(name), unorm.nfc(name), unorm.nfkd(name), unorm.nfkc(name));
         var d = Q.defer();
         var item = new Track({ name: unorm.nfkd(name), user: user });
         item.save(function (err, obj) {
-            if (err) { console.log('addTrack: %s', name, err); }
-            console.log('addTrack: %s => %s', name, obj._id.toString());
+            if (err) { logger.error('addTrack: %s', name, err, item.toObject()); }
+            logger.info('addTrack: %s => %s', name, obj._id.toString());
             map[name] = obj._id;
             d.resolve(obj);
         });
@@ -192,8 +202,8 @@ function addDepartures(names, user) {
 
         var item = new Departure({ name: name, user: user });
         item.save(function (err, obj) {
-            if (err) { console.log('addDeparture:', err); }
-            console.log('addDeparture: %s => %s', name, obj._id.toString());
+            if (err) { logger.error('addDeparture:', err, item.toObject()); }
+            logger.info('addDeparture: %s => %s', name, obj._id.toString());
             map[name] = obj._id;
             d.resolve(obj);
         });
@@ -217,10 +227,10 @@ function addTrains(items, user) {
         var item = new Train(item);
         item.save(function (err, obj) {
             if (err) {
-                console.log('addTrain:', err, obj);
+                logger.error('addTrain:', err, item.toObject());
                 return d.resolve(obj);
             }
-            console.log('addTrain: ', obj.toObject());
+            logger.info('addTrain: ', obj.toObject());
             d.resolve(obj);
         });
 
