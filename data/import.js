@@ -29,73 +29,100 @@ var Track = mongoose.model('Track');
 var Arrival = mongoose.model('Arrival');
 var Departure = mongoose.model('Departure');
 
-// parse csv files
-var data = fs.readFileSync('./data/trains.csv');
-csv.parse(data, function (err, items) {
-    // items.shift();
+function handleError(err, label, rowsDeleted) {
+    if (err) {
+        console.log('Error when truncate collection:', label);
+        process.exit(1);
+    } else {
+        console.log('Deleted %d items from %s', rowsDeleted, label);
+    }
+}
 
-    var arrivals = [];
-    var tracks = [];
-    var departures = [];
-    var trains = [];
-
-    items.forEach(function (item) {
-        var train = {
-            name: item[0],
-            arrival: item[1],
-            departure: item[2],
-            arrivalTime: getTime(item[3]),
-            departureTime: getTime(item[4]),
-            track: item[5],
-        };
-
-        if (item[1] && arrivals.indexOf(item[1]) === -1) {
-            arrivals.push(item[1]);
-        }
-        if (item[2] && departures.indexOf(item[2]) === -1) {
-            departures.push(item[2]);
-        }
-        if (item[5] && tracks.indexOf(item[5]) === -1) {
-            tracks.push(item[5]);
-        }
-
-        if (item[1] && item[2] && item[5]) {
-            trains.push(train);
-        }
-    });
-
-    var u;
-
-    getUser()
-        .then(function (user) {
-            u = user;
-            return addArrivals(arrivals, u);
-        })
-        .then(function (map) {
-            trains.forEach(function (train) {
-                train.arrival = map[train.arrival];
+Train.remove({}, function (err, rowsDeleted) {
+    handleError(err, 'Train', rowsDeleted);
+    Track.remove({}, function (err, rowsDeleted) {
+        handleError(err, 'Track', rowsDeleted);
+        Arrival.remove({}, function (err, rowsDeleted) {
+            handleError(err, 'Arrival', rowsDeleted);
+            Departure.remove({}, function (err, rowsDeleted) {
+                handleError(err, 'Departure', rowsDeleted);
+                if (!err) {
+                    importData();
+                }
             });
-
-            return addTracks(tracks, u);
-        })
-        .then(function (map) {
-            trains.forEach(function (train) {
-                train.track = map[train.track];
-            });
-
-            return addDepartures(departures, u);
-        })
-        .then(function (map) {
-            trains.forEach(function (train) {
-                train.departure = map[train.departure];
-            });
-
-            return addTrains(trains, u);
-        })
-        .then(function () {
-            process.exit(0);
         });
+    });
 });
+
+function importData() {
+    // parse csv files
+    var data = fs.readFileSync('./data/trains.csv');
+    csv.parse(data, function (err, items) {
+        // items.shift();
+
+        var arrivals = [];
+        var tracks = [];
+        var departures = [];
+        var trains = [];
+
+        items.forEach(function (item) {
+            var train = {
+                name: item[0],
+                arrival: item[1],
+                departure: item[2],
+                arrivalTime: getTime(item[3]),
+                departureTime: getTime(item[4]),
+                track: item[5],
+            };
+
+            if (item[1] && arrivals.indexOf(item[1]) === -1) {
+                arrivals.push(item[1]);
+            }
+            if (item[2] && departures.indexOf(item[2]) === -1) {
+                departures.push(item[2]);
+            }
+            if (item[5] && tracks.indexOf(item[5]) === -1) {
+                tracks.push(item[5]);
+            }
+
+            if (item[1] && item[2] && item[5]) {
+                trains.push(train);
+            }
+        });
+
+        var u;
+
+        getUser()
+            .then(function (user) {
+                u = user;
+                return addArrivals(arrivals, u);
+            })
+            .then(function (map) {
+                trains.forEach(function (train) {
+                    train.arrival = map[train.arrival];
+                });
+
+                return addTracks(tracks, u);
+            })
+            .then(function (map) {
+                trains.forEach(function (train) {
+                    train.track = map[train.track];
+                });
+
+                return addDepartures(departures, u);
+            })
+            .then(function (map) {
+                trains.forEach(function (train) {
+                    train.departure = map[train.departure];
+                });
+
+                return addTrains(trains, u);
+            })
+            .then(function () {
+                process.exit(0);
+            });
+    });
+}
 
 function getUser() {
     var d = Q.defer();
