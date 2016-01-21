@@ -205,11 +205,20 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 
             // 创建
             _.forEach($scope.trains, function (train) {
+                // 无到达时间，但是有到达方向的是耍流氓
+                if (train.arrival.name === '向塘') {
+                    console.log(train);
+                    return;
+                }
+
                 var points = [];
                 points.push({ x: getXPositionFromTime(train.arrivalTime || train.departureTime), y: locations[train.arrival.name] });
                 points.push({ x: getXPositionFromTime(train.arrivalTime || train.departureTime), y: locations[train.track.name] });
                 points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.track.name] });
                 points.push({ x: getXPositionFromTime(train.departureTime), y: locations[train.departure.name] });
+
+                if (!train.arrivalTime) { console.log('missing arrivalTime:', train, points); }
+                if (!train.departureTime) { console.log('missing departureTime:', train, points); }
 
                 var magicNumber = 5;
                 var start = points[0];
